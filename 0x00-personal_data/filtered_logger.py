@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """
-Filters sensitive information from a log message by replacing specified fields with a redacted value.
-This function uses regex substitution to perform the obfuscation.
+Module for filtering sensitive information from log messages
 """
 
 import re
+from typing import List
 
-def filter_datum(fields: list[str], redaction: str, message: str, separator: str) -> str:
+
+def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:
     """
-    Replace sensitive fields in a log message with the redaction string.
-
+    Returns the log message obfuscated
     Args:
-        fields (list[str]): List of fields to obfuscate.
-        redaction (str): String used for obfuscation.
-        message (str): Log message to be filtered.
-        separator (str): Character that separates the fields in the log message.
-
+        fields: list of strings representing all fields to obfuscate
+        redaction: string representing what the field will be obfuscated with
+        message: string representing the log line
+        separator: string representing separator between fields in the log line
     Returns:
-        str: The log message with sensitive fields replaced by the redaction string.
+        The obfuscated log message
     """
-    return re.sub(r'(' + '|'.join([re.escape(field) for field in fields]) + r')=[^' + re.escape(separator) + r';]+', r'\1=' + redaction, message)
+    for field in fields:
+        message = re.sub(f'{field}=.*?{separator}', f'{field}={redaction}{separator}', message)
+    return message
