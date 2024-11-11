@@ -3,10 +3,12 @@
 This module defines the BasicAuth class for handling basic authentication.
 """
 
+import re
 import base64
-from typing import TypeVar
+import binascii
+from typing import Tuple, TypeVar
+from .auth import Auth
 from models.user import User
-from api.v1.auth.auth import Auth
 
 
 class BasicAuth(Auth):
