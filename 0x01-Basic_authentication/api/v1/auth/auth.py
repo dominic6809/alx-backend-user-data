@@ -3,6 +3,7 @@
 This module defines the Auth class for managing API authentication.
 """
 
+import re
 from typing import List, TypeVar
 from flask import request
 
