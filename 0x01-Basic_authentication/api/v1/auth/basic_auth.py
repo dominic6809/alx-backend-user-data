@@ -17,12 +17,15 @@ class BasicAuth(Auth):
     Inherits from the Auth class.
     """
 
-    def extract_base64_authorization_header(self, authorization_header: str) -> str:
+    def extract_base64_authorization_header(
+            self,
+            authorization_header: str) -> str:
         """
         Extract the Base64 string from the Authorization header.
 
         Returns:
-            The Base64 part of the Authorization header if valid, otherwise None.
+            The Base64 part of the Authorization header
+            if valid, otherwise None.
         """
         if type(authorization_header) == str:
             pattern = r'Basic (?P<token>.+)'
@@ -31,7 +34,10 @@ class BasicAuth(Auth):
                 return field_match.group('token')
         return None
 
-    def decode_base64_authorization_header(self, base64_authorization_header: str) -> str:
+    def decode_base64_authorization_header(
+            self,
+            base64_authorization_header: str,
+            ) -> str:
         """
         Decode the Base64 string to get the decoded authorization header.
 
@@ -53,12 +59,14 @@ class BasicAuth(Auth):
             decoded_base64_authorization_header: str,
             ) -> Tuple[str, str]:
         """
-        Extract the user email and password from the decoded Base64 Authorization header.
+        Extract the user email and password from the
+        decoded Base64 Authorization header.
 
         Handles passwords with colons.
 
         Returns:
-            tuple: A tuple containing the email and password if valid, otherwise (None, None).
+            tuple: A tuple containing the email and password
+            if valid, otherwise (None, None).
         """
         if type(decoded_base64_authorization_header) == str:
             pattern = r'(?P<user>[^:]+):(?P<password>.+)'
