@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-""" Module of Users views
+"""
+User views for handling user-related endpoints.
 """
 from api.v1.views import app_views
 from flask import abort, jsonify, request
@@ -18,12 +19,15 @@ def view_all_users() -> str:
 
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
 def view_one_user(user_id: str = None) -> str:
-    """ GET /api/v1/users/:id
-    Path parameter:
-      - User ID
-    Return:
-      - User object JSON represented
-      - 404 if the User ID doesn't exist
+    """
+    Retrieve a specific user by user_id or
+    return the current authenticated user if is specified.
+    
+    Args:
+        user_id (str): The ID of the user to retrieve
+    
+    Returns:
+        JSON response containing user data or 404 if not found.
     """
     if user_id is None:
         abort(404)
@@ -35,7 +39,8 @@ def view_one_user(user_id: str = None) -> str:
 
 @app_views.route('/users/<user_id>', methods=['DELETE'], strict_slashes=False)
 def delete_user(user_id: str = None) -> str:
-    """ DELETE /api/v1/users/:id
+    """
+    DELETE /api/v1/users/:id
     Path parameter:
       - User ID
     Return:
