@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Route module for the API Application Entry Point
+Main application module for API.
+Sets up the Flask app and configures basic authentication for user endpoints.
 """
 import os
 from os import getenv
