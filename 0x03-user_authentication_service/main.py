@@ -16,6 +16,9 @@ to the Flask app and validates the responses using assertions.
 import requests
 
 
+EMAIL = "guillaume@holberton.io"
+PASSWD = "b4l0u"
+NEW_PASSWD = "t4rt1fl3tt3"
 BASE_URL = "http://localhost:5000"
 
 
@@ -187,11 +190,6 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
     res = requests.put(url, data=body)
     assert res.status_code == 200
     assert res.json() == {"email": email, "message": "Password updated"}
-
-
-EMAIL = "guillaume@holberton.io"
-PASSWD = "b4l0u"
-NEW_PASSWD = "t4rt1fl3tt3"
 
 
 if __name__ == "__main__":
