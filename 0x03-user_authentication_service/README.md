@@ -44,11 +44,17 @@ user_authentication_service │ ├── app.py # Main Flask application ├─
 To test the functionalities, the main.py module is provided, which automates the following tasks:
 
 Register a new user.
+
 Attempt to log in with incorrect credentials.
+
 View profile of an unlogged user.
+
 Log in with valid credentials and view the profile.
+
 Log out and verify.
+
 Request a reset password token.
+
 Update the user's password and verify.
 
 Run the tests using:
