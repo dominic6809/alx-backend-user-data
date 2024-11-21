@@ -28,7 +28,8 @@ def register_user(email: str, password: str) -> None:
         password (str): The password of the user.
 
     Raises:
-        AssertionError: If the response status code or JSON payload is incorrect.
+        AssertionError: If the response status code
+        or JSON payload is incorrect.
     """
     url = "{}/users".format(BASE_URL)
     body = {
@@ -75,7 +76,8 @@ def log_in(email: str, password: str) -> str:
         str: The session ID from the response cookies.
 
     Raises:
-        AssertionError: If the response status code is incorrect or session_id is missing.
+        AssertionError: If the response status code is incorrect
+        or session_id is missing.
     """
     url = "{}/sessions".format(BASE_URL)
     body = {
@@ -108,7 +110,8 @@ def profile_logged(session_id: str) -> None:
         session_id (str): The session ID of the logged-in user.
 
     Raises:
-        AssertionError: If the response status code is not 200 or the email is missing from the response.
+        AssertionError: If the response status code is not 200
+        or the email is missing from the response.
     """
     url = "{}/profile".format(BASE_URL)
     req_cookies = {
