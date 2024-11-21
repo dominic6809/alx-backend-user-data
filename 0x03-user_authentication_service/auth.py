@@ -21,14 +21,14 @@ class Auth:
 
     def register_user(self, email: str, password: str) -> User:
         """Register a new user by saving their email and hashed password.
-        
+
         Args:
             email (str): The user's email.
             password (str): The user's password to hash.
-        
+
         Returns:
             User: The created user object.
-        
+
         Raises:
             ValueError: If a user already exists with the provided email.
         """
@@ -122,6 +122,7 @@ class Auth:
             hashed_password=new_password_hash,
             reset_token=None,
         )
+
 
 def _hash_password(password: str) -> bytes:
     """
