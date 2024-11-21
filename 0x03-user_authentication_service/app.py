@@ -3,6 +3,7 @@
 Main file with user authentication features.
 """
 from flask import Flask, jsonify, request, abort, redirect
+
 from auth import Auth
 
 
@@ -13,7 +14,7 @@ AUTH = Auth()
 @app.route("/", methods=["GET"], strict_slashes=False)
 def index() -> str:
     """
-    Home route to check the API status
+    Home route to check API status
     """
     return jsonify({"message": "Bienvenue"})
 
@@ -21,7 +22,7 @@ def index() -> str:
 @app.route("/users", methods=["POST"], strict_slashes=False)
 def users() -> str:
     """
-    POST users and return The account creation payload.
+    Post user and the creation payload
     """
     email, password = request.form.get("email"), request.form.get("password")
     try:
@@ -34,7 +35,7 @@ def users() -> str:
 @app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login() -> str:
     """
-    Login a user
+    Login a User
     """
     email, password = request.form.get("email"), request.form.get("password")
     if not AUTH.valid_login(email, password):
@@ -48,8 +49,9 @@ def login() -> str:
 @app.route("/sessions", methods=["DELETE"], strict_slashes=False)
 def logout() -> str:
     """
-    Logout a user, deletes the session
-    and redirects to home route
+    DELETE /sessions
+    Return:
+        - Redirects to home route.
     """
     session_id = request.cookies.get("session_id")
     user = AUTH.get_user_from_session_id(session_id)
@@ -62,7 +64,7 @@ def logout() -> str:
 @app.route("/profile", methods=["GET"], strict_slashes=False)
 def profile() -> str:
     """
-    Get the profile of a user
+    The user's profile information.
     """
     session_id = request.cookies.get("session_id")
     user = AUTH.get_user_from_session_id(session_id)
@@ -74,7 +76,7 @@ def profile() -> str:
 @app.route("/reset_password", methods=["POST"], strict_slashes=False)
 def get_reset_password_token() -> str:
     """
-    Generate a reset password token
+    The user's password reset payload.
     """
     email = request.form.get("email")
     reset_token = None
@@ -84,18 +86,15 @@ def get_reset_password_token() -> str:
         reset_token = None
     if reset_token is None:
         abort(403)
-    return jsonify({"email": email, "reset_token": reset_token}))
+    return jsonify({"email": email, "reset_token": reset_token})
 
 
 @app.route("/reset_password", methods=["PUT"], strict_slashes=False)
 def update_password() -> str:
     """
-    Update the user's password using reset token
+    Return:
+        - The user's password updated payload.
     """
-    email = request.form.get('email')
-    reset_token = request.form.get('reset_token')
-    new_password = request.form.get('new_password')
-
     email = request.form.get("email")
     reset_token = request.form.get("reset_token")
     new_password = request.form.get("new_password")
@@ -111,4 +110,4 @@ def update_password() -> str:
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host="0.0.0.0", port="5000")
