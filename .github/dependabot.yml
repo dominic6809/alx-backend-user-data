@@ -5,7 +5,7 @@
 
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "pip"  # The package ecosystem is 'pip' for Python projects
+    directory: "/"  # Location of package manifests (root directory in this case)
     schedule:
       interval: "weekly"
