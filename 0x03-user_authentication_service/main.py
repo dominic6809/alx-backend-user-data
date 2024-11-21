@@ -9,10 +9,12 @@ This script performs various tasks such as:
 4. Logging out
 5. Requesting a password reset token and updating the password
 
-The script uses the `requests` module to send HTTP requests to the Flask app and validates the responses using assertions.
+The script uses the `requests` module to send HTTP requests
+to the Flask app and validates the responses using assertions.
 """
 
 import requests
+
 
 BASE_URL = "http://localhost:5000"
 
@@ -28,9 +30,17 @@ def register_user(email: str, password: str) -> None:
     Raises:
         AssertionError: If the response status code or JSON payload is incorrect.
     """
-    response = requests.post(f"{BASE_URL}/users", data={"email": email, "password": password})
-    assert response.status_code == 200
-    assert response.json() == {"email": email, "message": "user created"}
+    url = "{}/users".format(BASE_URL)
+    body = {
+        'email': email,
+        'password': password,
+    }
+    res = requests.post(url, data=body)
+    assert res.status_code == 200
+    assert res.json() == {"email": email, "message": "user created"}
+    res = requests.post(url, data=body)
+    assert res.status_code == 400
+    assert res.json() == {"message": "email already registered"}
 
 
 def log_in_wrong_password(email: str, password: str) -> None:
@@ -44,8 +54,13 @@ def log_in_wrong_password(email: str, password: str) -> None:
     Raises:
         AssertionError: If the response status code is not 401.
     """
-    response = requests.post(f"{BASE_URL}/sessions", data={"email": email, "password": password})
-    assert response.status_code == 401
+    url = "{}/sessions".format(BASE_URL)
+    body = {
+        'email': email,
+        'password': password,
+    }
+    res = requests.post(url, data=body)
+    assert res.status_code == 401
 
 
 def log_in(email: str, password: str) -> str:
@@ -62,10 +77,15 @@ def log_in(email: str, password: str) -> str:
     Raises:
         AssertionError: If the response status code is incorrect or session_id is missing.
     """
-    response = requests.post(f"{BASE_URL}/sessions", data={"email": email, "password": password})
-    assert response.status_code == 200
-    assert "session_id" in response.cookies
-    return response.cookies["session_id"]
+    url = "{}/sessions".format(BASE_URL)
+    body = {
+        'email': email,
+        'password': password,
+    }
+    res = requests.post(url, data=body)
+    assert res.status_code == 200
+    assert res.json() == {"email": email, "message": "logged in"}
+    return res.cookies.get('session_id')
 
 
 def profile_unlogged() -> None:
@@ -75,8 +95,9 @@ def profile_unlogged() -> None:
     Raises:
         AssertionError: If the response status code is not 403.
     """
-    response = requests.get(f"{BASE_URL}/profile")
-    assert response.status_code == 403
+    url = "{}/profile".format(BASE_URL)
+    res = requests.get(url)
+    assert res.status_code == 403
 
 
 def profile_logged(session_id: str) -> None:
@@ -89,9 +110,13 @@ def profile_logged(session_id: str) -> None:
     Raises:
         AssertionError: If the response status code is not 200 or the email is missing from the response.
     """
-    response = requests.get(f"{BASE_URL}/profile", cookies={"session_id": session_id})
-    assert response.status_code == 200
-    assert "email" in response.json()
+    url = "{}/profile".format(BASE_URL)
+    req_cookies = {
+        'session_id': session_id,
+    }
+    res = requests.get(url, cookies=req_cookies)
+    assert res.status_code == 200
+    assert "email" in res.json()
 
 
 def log_out(session_id: str) -> None:
@@ -104,8 +129,13 @@ def log_out(session_id: str) -> None:
     Raises:
         AssertionError: If the response status code is not 302 (redirect).
     """
-    response = requests.delete(f"{BASE_URL}/sessions", cookies={"session_id": session_id})
-    assert response.status_code == 302  # Redirects to home route
+    url = "{}/sessions".format(BASE_URL)
+    req_cookies = {
+        'session_id': session_id,
+    }
+    res = requests.delete(url, cookies=req_cookies)
+    assert res.status_code == 200
+    assert res.json() == {"message": "Bienvenue"}
 
 
 def reset_password_token(email: str) -> str:
@@ -119,12 +149,17 @@ def reset_password_token(email: str) -> str:
         str: The reset token received in the response.
 
     Raises:
-        AssertionError: If the response status code is not 200 or reset_token is missing.
+        AssertionError: If the response status code is not 200
+        or reset_token is missing.
     """
-    response = requests.post(f"{BASE_URL}/reset_password", data={"email": email})
-    assert response.status_code == 200
-    assert "reset_token" in response.json()
-    return response.json()["reset_token"]
+    url = "{}/reset_password".format(BASE_URL)
+    body = {'email': email}
+    res = requests.post(url, data=body)
+    assert res.status_code == 200
+    assert "email" in res.json()
+    assert res.json()["email"] == email
+    assert "reset_token" in res.json()
+    return res.json().get('reset_token')
 
 
 def update_password(email: str, reset_token: str, new_password: str) -> None:
@@ -137,15 +172,18 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
         new_password (str): The new password to set.
 
     Raises:
-        AssertionError: If the response status code is not 200 or the expected message is incorrect.
+        AssertionError: If the response status code is not 200
+        or the expected message is incorrect.
     """
-    response = requests.put(f"{BASE_URL}/reset_password", data={
-        "email": email,
-        "reset_token": reset_token,
-        "new_password": new_password
-    })
-    assert response.status_code == 200
-    assert response.json() == {"email": email, "message": "Password updated"}
+    url = "{}/reset_password".format(BASE_URL)
+    body = {
+        'email': email,
+        'reset_token': reset_token,
+        'new_password': new_password,
+    }
+    res = requests.put(url, data=body)
+    assert res.status_code == 200
+    assert res.json() == {"email": email, "message": "Password updated"}
 
 
 EMAIL = "guillaume@holberton.io"
